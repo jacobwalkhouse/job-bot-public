@@ -1,4 +1,4 @@
-# Job Application Workflow
+# Job Bot Public
 
 An automated job application generator that uses LM Studio API to create customized resumes and cover letters.
 
