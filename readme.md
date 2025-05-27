@@ -1,53 +1,64 @@
-# Job Bot Public
+# Job Bot
 
-An automated job application generator that uses LM Studio API to create customized resumes and cover letters.
+An automated job application generator that uses LM Studio API to create customized resumes and cover letters — now with support for parsing existing resumes in PDF and DOCX formats.
 
 ## Features
 
-- 🤖 AI-powered content generation using LM Studio
-- 📝 Customizable markdown templates
-- 📄 Automatic PDF generation with Pandoc
-- ⚙️ JSON-based configuration
-- 🎯 Job listing analysis and content tailoring
+- 🤖 **AI-generated Content**: Uses LM Studio to create tailored resumes and cover letters
+- 📥 **Resume Parsing**: AI can extract and reuse information from your existing PDF or DOCX resume
+- 📝 **Markdown Templates**: Fully customizable templates for consistent formatting
+- 📄 **Automatic PDF Generation**: Uses Pandoc and LaTeX to output printable documents
+- ⚙️ **JSON Configuration**: All personal and job data is stored in an editable JSON file
+- 🎯 **Job Listing Analysis**: Understands job descriptions and tailors application content accordingly
 
 ## Prerequisites
 
-### Required Software
+### Required Programs
 
-1. **LM Studio**: Download and set up LM Studio with a local model
+1. **LM Studio**
    - Download from [lmstudio.ai](https://lmstudio.ai/)
-   - Load a compatible model (models that support user/assistant roles work best)
+   - Load a local model (preferably one supporting user/assistant roles)
    - Enable the API server in LM Studio
 
-2. **Python**: Python 3.7+ with required packages
+2. **Pandoc**
+   - Required for Markdown-to-PDF conversion  
+   - [Install Pandoc](https://pandoc.org/installing.html)
 
-3. **Pandoc + LaTeX** (for PDF generation):
-   
-   **Windows:**
-   ```bash
-   # Install Pandoc from https://pandoc.org/installing.html
-   # Install MiKTeX from https://miktex.org/download
-   ```
-   
-   **macOS:**
-   ```bash
-   brew install pandoc
-   # Install MacTeX from https://tug.org/mactex/ OR BasicTeX:
-   brew install --cask basictex
-   ```
-   
-   **Ubuntu/Debian:**
-   ```bash
-   sudo apt-get install pandoc texlive-xetex texlive-fonts-recommended
-   ```
-   
-   **Note:** XeLaTeX is required for PDF generation. The script will try multiple LaTeX engines (xelatex, pdflatex, lualatex) but XeLaTeX typically works best with Unicode content.
+3. **LaTeX Distribution** (required for PDF generation):
+   - **Windows**: [MiKTeX](https://miktex.org/download) or TeX Live
+   - **macOS**: [MacTeX](https://tug.org/mactex/) or BasicTeX (`brew install --cask basictex`)
+   - **Linux**: `sudo apt-get install texlive-xetex texlive-fonts-recommended`
+
+> ⚠️ *Note*: The script attempts to use XeLaTeX first, then pdflatex/lualatex if necessary.
+
+### Required Python Libraries
+
+Install via `pip`:
+
+```bash
+pip install requests pypdf python-docx markdown openai
+```
+
+Alternatively, install from the `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
+
+#### `requirements.txt`
+```
+requests
+pypdf
+python-docx
+markdown
+openai
+```
 
 ## Installation
 
-1. Clone or download this repository:
+1. Clone this repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/yourusername/job-application-workflow.git
    cd job-application-workflow
    ```
 
@@ -56,26 +67,25 @@ An automated job application generator that uses LM Studio API to create customi
    pip install -r requirements.txt
    ```
 
-3. Run setup (optional - creates default config if not present):
+3. Run the setup script (optional):
    ```bash
    python setup.py
    ```
 
-4. Configure your information:
+4. Configure your profile:
    ```bash
-   # Edit the generated config.json file with your details
-   nano config.json  # or use your preferred editor
+   nano config.json  # or open with any editor
    ```
 
 ## Usage
 
-### Basic Usage
+### Command Line Usage
 ```bash
 python job_app_generator.py
 ```
 Then paste your job listing when prompted.
 
-### Advanced Usage
+#### Advanced Options
 ```bash
 # Use custom config file
 python job_app_generator.py --config my_config.json
@@ -84,101 +94,99 @@ python job_app_generator.py --config my_config.json
 python job_app_generator.py --company "Specific Company Name"
 ```
 
-### Interactive Mode
-1. Run the script
-2. Paste the job listing (multiple lines supported)
-3. Press Ctrl+D (Unix/Mac) or Ctrl+Z (Windows) to finish
-4. Wait for generation to complete
+### GUI Usage
+```bash
+python gui.py
+```
+This launches a graphical interface for easier input and configuration. Recommended for users who prefer not to use the command line.
+
+#### Instructions
+1. Click the **Parse Resume** button and choose a PDF or DOCX file from the file browser. The application will extract relevant details automatically.
+2. Copy the job description from your chosen job listing and paste it into the **Job Listing** text box.
+3. Click **Generate Application** to create your customized resume and cover letter.
+4. Your generated files will appear in the `/output` directory.
 
 ## Configuration
 
-Edit `config.json` to customize:
+Edit the `config.json` file to update your:
 
 ### LM Studio Settings
 ```json
-{
-  "lm_studio": {
-    "base_url": "http://localhost:1234/v1",
-    "model": "local-model",
-    "temperature": 0.7,
-    "max_tokens": 1000
-  }
+"lm_studio": {
+  "base_url": "http://localhost:1234/v1",
+  "model": "local-model",
+  "temperature": 0.7,
+  "max_tokens": 1000
 }
 ```
 
-### Personal Information
-- Contact details (name, email, phone, location)
+### Personal Profile
+- Full name, email, phone, location
 - Education background
-- Professional field
-- LinkedIn profile
+- LinkedIn or website links
 
 ### Skills and Experience
-- Key competencies and technical skills
-- Work history with detailed achievements
-- Bullet points for each position
+- Technical skills and soft skills
+- Past job roles, achievements, and responsibilities
+- Bullet-point highlights per position
 
 ## File Structure
 
 ```
 job-application-workflow/
-├── job_app_generator.py    # Main application
-├── gui.py                 # GUI interface (if using DearPyGui)
-├── setup.py               # Setup script
-├── requirements.txt       # Python dependencies
-├── config.json           # Configuration file
-├── templates/            # Markdown templates
-│   ├── cover_letter_template.md
-│   └── resume_template.md
-├── output/              # Generated files
-└── README.md           # This file
+├── job_app_generator.py      # Main script
+├── gui.py                    # Optional GUI interface
+├── setup.py                  # Setup utility
+├── requirements.txt          # Required Python packages
+├── config.json               # User config file
+├── templates/                # Markdown templates
+│   ├── resume_template.md
+│   └── cover_letter_template.md
+├── output/                   # Generated files
+└── README.md                 # This documentation
 ```
 
 ## Output Files
 
-The generator creates timestamped files in the `output/` directory:
+Generated files are saved to the `output/` directory with timestamped filenames:
+
+- `resume_CompanyName_YYYYMMDD_HHMMSS.md`
 - `cover_letter_CompanyName_YYYYMMDD_HHMMSS.md`
-- `resume_CompanyName_YYYYMMDD_HHMMSS.md`  
-- `cover_letter_CompanyName_YYYYMMDD_HHMMSS.pdf` (if Pandoc/LaTeX available)
-- `resume_CompanyName_YYYYMMDD_HHMMSS.pdf` (if Pandoc/LaTeX available)
+- (If PDF tools available):
+  - `resume_CompanyName_YYYYMMDD_HHMMSS.pdf`
+  - `cover_letter_CompanyName_YYYYMMDD_HHMMSS.pdf`
 
 ## Troubleshooting
 
 ### LM Studio Connection Issues
-- **"Could not connect to LM Studio"**: Ensure LM Studio is running and the API server is enabled
-- **"Only user and assistant roles are supported"**: This is normal - the script handles this automatically by combining system and user messages
-- Check the base URL in config.json (default: http://localhost:1234/v1)
-- Verify a model is loaded in LM Studio
-- Try using a different model if issues persist
+- Ensure LM Studio is running and the API server is enabled
+- Verify model supports `user/assistant` roles
+- Check base URL in `config.json` (default: `http://localhost:1234/v1`)
+- Try a different model if responses are blank or malformed
 
-### PDF Generation Issues
-- **"Pandoc not found"**: Install Pandoc from [pandoc.org](https://pandoc.org/installing.html)
-- **"LaTeX Error"**: Install a LaTeX distribution:
-  - **Windows**: MiKTeX or TeX Live
-  - **macOS**: MacTeX or BasicTeX
-  - **Linux**: texlive-xetex package
-- **Unicode/Font issues**: XeLaTeX (preferred) handles Unicode better than pdflatex
-- Check file permissions in output directory
-- Ensure markdown files are properly formatted
+### PDF Generation Errors
+- Ensure Pandoc is installed and on your PATH
+- Confirm a LaTeX distribution is installed (XeLaTeX preferred)
+- If Unicode/font issues appear, use XeLaTeX over pdflatex
+- Check output file permissions
 
-### Template Issues
-- Check template files exist in `templates/` directory
-- Verify all placeholder variables are properly formatted: `{{VariableName}}`
-- Run the script once to auto-generate default templates
-- Templates use double curly braces for variable substitution
+### Resume Parsing Issues
+- Only `.pdf` and `.docx` files are supported
+- File must be readable and structured logically (no image-based PDFs)
 
-### Model Compatibility
-- Some models work better than others with the API format
-- If you get template errors, try searching for your model under "lmstudio-community" for better prompt templates
-- You can override prompt templates in LM Studio: My Models > model settings > Prompt Template
+### Template Errors
+- Templates should be in `templates/` folder
+- All variables must be in double curly braces: `{{VariableName}}`
+- Run the script once to auto-generate default templates if missing
 
-## API Dependencies
+## API Notes
 
-This project uses direct HTTP requests to communicate with LM Studio's OpenAI-compatible API. No external API keys or internet connection required for AI generation - everything runs locally.
+This project uses **local models** via LM Studio’s **OpenAI-compatible API** — no external keys or cloud connections required.
 
 ## Contributing
 
-Feel free to submit issues, fork the repository, and create pull requests for any improvements.
+Feel free to open issues or submit pull requests for features, bug fixes, or suggestions.
 
 ## License
 
-MIT License - feel free to use and modify as needed.
+The UnLicense — free to use, modify, and distribute.
