@@ -36,7 +36,7 @@ An automated job application generator that uses LM Studio API to create customi
 Install via `pip`:
 
 ```bash
-pip install requests pypdf python-docx markdown openai
+pip install requests pypdf python-docx markdown openai dearpygui lmstudio
 ```
 
 Alternatively, install from the `requirements.txt` file:
@@ -48,10 +48,12 @@ pip install -r requirements.txt
 #### `requirements.txt`
 ```
 requests
-pypdf
+PyPDF2
 python-docx
 markdown
 openai
+dearpygui
+lmstudio
 ```
 
 ## Installation
